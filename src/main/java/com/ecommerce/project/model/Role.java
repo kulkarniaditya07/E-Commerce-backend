@@ -22,7 +22,7 @@ public class Role implements Serializable {
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "roles")
-    private AppRoles appRoles;
+    private List<AppRoles> appRoles;
 
     private String name;
 
