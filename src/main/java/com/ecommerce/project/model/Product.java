@@ -39,4 +39,12 @@ public class Product implements Serializable {
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private User seller;
+
+    @Lob
+    @Column(columnDefinition = "BYTEA")
+    private byte[] imageData;
+
+    private String imageName;
+
+    private String imageType;
 }
