@@ -9,7 +9,6 @@ import com.ecommerce.project.payload.ProductResponse;
 import com.ecommerce.project.repositories.CategoryRepository;
 import com.ecommerce.project.repositories.ProductRepository;
 import com.ecommerce.project.services.ProductService;
-import com.ecommerce.project.util.FilesUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -179,10 +179,15 @@ public class ProductServiceImpl implements ProductService {
         Product getProductFromDB=productRepository.findById(productId)
                 .orElseThrow(()-> new ResourceNotFoundException("Product", "product id",productId));
 
-        String fileName= FilesUtil.uploadFile(file);
-        getProductFromDB.setImage(fileName);
-
-        Product updatedProduct=productRepository.save(getProductFromDB);
+        Product updatedProduct;
+        try{
+            getProductFromDB.setImageName(file.getOriginalFilename());
+            getProductFromDB.setImageType(file.getContentType());
+            getProductFromDB.setImageData(file.getBytes());
+            updatedProduct=productRepository.save(getProductFromDB);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload image",e);
+        }
 
         return modelMapper.map(updatedProduct,ProductDTO.class);
 
