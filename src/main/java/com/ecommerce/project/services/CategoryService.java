@@ -1,10 +1,12 @@
 package com.ecommerce.project.services;
 
-import com.ecommerce.project.payload.CategoryDTO;
-import com.ecommerce.project.payload.CategoryResponse;
+import com.ecommerce.project.dto.CategoryDTO;
+import com.ecommerce.project.response.RestApiResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CategoryService {
-    CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+    RestApiResponse<Page<CategoryDTO>> getAllCategories(Pageable pageable);
 
     CategoryDTO createCategory(CategoryDTO categoryDto);
 

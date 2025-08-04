@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: ak-ecom
+  datasource:
+    url: jdbc:postgresql://localhost:5432/akecom
+    username: postgres
+    password: root
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        use_sql_comments: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ''
+      timeout: 60000
+      database: 0
+  redis:
+    serializer: jackson
+app:
+  jwtSecret: bxoSfb9j+ymIRPHNzYpYA6NKNAsEjcqLsx1amxis/Cs=
+  jwtExpiration: 3600000

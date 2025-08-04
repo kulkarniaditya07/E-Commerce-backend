@@ -1,12 +1,16 @@
 package com.ecommerce.project.controller;
 
-import com.ecommerce.project.config.AppConstants;
-import com.ecommerce.project.payload.CategoryDTO;
-import com.ecommerce.project.payload.CategoryResponse;
+import com.ecommerce.project.dto.CategoryDTO;
 import com.ecommerce.project.services.CategoryService;
+import com.ecommerce.project.response.RestApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,26 +18,21 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @Tag(name = "Category API", description = "API for category-related operations")
+@AllArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
 
     @GetMapping("/public/categories")
     @Operation(
             summary = "Gets all categories"
     )
-    public ResponseEntity<CategoryResponse> getAllCategories(@RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
-                                                             @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
-                                                             @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
-                                                             @RequestParam(name = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir)
+    public ResponseEntity<RestApiResponse<Page<CategoryDTO>>> getAllCategories(@PageableDefault(size = 5)
+                                                                 @SortDefault.SortDefaults({@SortDefault(value = "categoryId")})Pageable pageable)
     {
         // Return the current list of categories
-        CategoryResponse categoryResponse = categoryService.getAllCategories(pageNumber,pageSize, sortBy, sortDir);
-        return ResponseEntity.status(HttpStatus.OK).body(categoryResponse);
+
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getAllCategories(pageable));
     }
 
     @PostMapping("/public/categories")

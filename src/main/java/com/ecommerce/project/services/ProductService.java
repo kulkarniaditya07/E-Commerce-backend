@@ -1,13 +1,15 @@
 package com.ecommerce.project.services;
 
-import com.ecommerce.project.model.Product;
-import com.ecommerce.project.payload.ProductDTO;
-import com.ecommerce.project.payload.ProductResponse;
+import com.ecommerce.project.dto.ProductDTO;
+import com.ecommerce.project.dto.ProductResponse;
+import com.ecommerce.project.response.RestApiResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ProductService {
 
-    ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+   // ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
     ProductDTO addProductToCategory(ProductDTO productDTO, Long categoryId);
 
@@ -25,4 +27,5 @@ public interface ProductService {
     ProductDTO uploadImageToServer(Long productId, MultipartFile file);
 
 
+    RestApiResponse<Page<ProductDTO>> findAllProducts(Pageable pageable);
 }

@@ -1,15 +1,22 @@
 package com.ecommerce.project.controller;
 
 import com.ecommerce.project.config.AppConstants;
-import com.ecommerce.project.payload.ProductDTO;
-import com.ecommerce.project.payload.ProductResponse;
+import com.ecommerce.project.dto.ProductDTO;
+import com.ecommerce.project.dto.ProductResponse;
+import com.ecommerce.project.services.ProductService;
 import com.ecommerce.project.services.impl.ProductServiceImpl;
+import com.ecommerce.project.response.RestApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Product API", description = "API for product-related operations")
 public class ProductController {
 
-    private final ProductServiceImpl productService;
+    private final ProductService productService;
 
     public ProductController(ProductServiceImpl productService) {
         this.productService = productService;
@@ -32,12 +39,10 @@ public class ProductController {
     @Operation(
             summary = "Get all products"
     )
-    public ResponseEntity<ProductResponse> getAllProducts(@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
-                                                          @RequestParam (name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false)Integer pageSize,
-                                                          @RequestParam (name = "SortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY,required = false) String sortBy,
-                                                          @RequestParam (name = "SortDir", defaultValue = AppConstants.SORT_DIR,required = false) String sortDir){
-        ProductResponse productResponse = productService.getAllProducts(pageNumber, pageSize, sortBy, sortDir);
-        return ResponseEntity.status(HttpStatus.OK).body(productResponse);
+    public ResponseEntity<RestApiResponse<Page<ProductDTO>>> getAllProducts(@PageableDefault(value = 5)
+                                                          @SortDefault.SortDefaults({
+                                                                  @SortDefault(value = "productId",direction = Sort.Direction.ASC)})Pageable pageable){
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findAllProducts(pageable));
     }
 
     @PostMapping("/admin/category/{categoryId}/product")
