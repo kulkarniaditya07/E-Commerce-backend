@@ -43,4 +43,9 @@ public class ConfigProperties {
     @Value("${is-cache-enabled:true}")
     private boolean isCacheEnabled;
 
+    @Value("${encryption.key}")
+    private String EncryptionKey;
+
+    @Value("${encryption.salt}")
+    private String EncryptionSalt;
 }
